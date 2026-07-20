@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>에센허브 · 국내 Meta Ads 리포트 (한눈에 보기) 6/1–6/30</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0f1117;--card:#1a1d27;--card2:#21253a;--border:#2e3250;--accent:#4f8ef7;--green:#34c77b;--red:#f25c54;--orange:#f5a623;--text:#e8eaf0;--muted:#7b82a0;--purple:#c4b5fd}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',sans-serif;font-size:14px;line-height:1.6}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#0d1b3e 0%,#1a1d27 100%);border-bottom:1px solid var(--border);padding:28px 32px 22px}
+.header-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
+.header h1 span{color:var(--accent)}
+.header-meta{font-size:12px;color:var(--muted);margin-top:6px}
+.header-meta a{color:var(--accent);text-decoration:none}
+.header-meta a:hover{text-decoration:underline}
+.notice{margin-top:14px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.35);border-radius:8px;padding:10px 14px;font-size:13px;color:#fbbf24;display:flex;gap:8px;align-items:flex-start}
+
+/* LAYOUT */
+.container{max-width:1320px;margin:0 auto;padding:24px}
+.sec{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:14px;margin-top:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.sec:first-child{margin-top:0}
+.sec-note{font-size:11px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.kpi .v{font-size:26px;font-weight:700;letter-spacing:-.5px}
+.kpi .s{font-size:11px;color:var(--muted);margin-top:4px}
+.kpi.good .v{color:var(--green)}
+
+/* CHARTS */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:800px){.chart-row{grid-template-columns:1fr}}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px}
+.chart-card h3{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:.8px}
+.chart-wrap{position:relative;height:220px}
+
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.search-input{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;min-width:220px}
+.search-input::placeholder{color:var(--muted)}
+.search-input:focus{outline:none;border-color:var(--accent)}
+.chip{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.chip:hover{border-color:var(--accent);color:var(--text)}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.sort-select{margin-left:auto;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-size:12px;cursor:pointer}
+.sort-select:focus{outline:none;border-color:var(--accent)}
+.count-badge{font-size:11px;color:var(--muted);white-space:nowrap}
+.legend-note{font-size:11px;color:var(--muted);margin-bottom:10px;background:var(--card2);border-radius:6px;padding:8px 12px;display:flex;gap:14px;flex-wrap:wrap}
+.legend-note b{color:var(--text)}
+
+/* TABLE */
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:4px}
+.table-scroll{max-height:560px;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--card2);padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:2}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--text)}
+.sort-arrow{font-size:9px;margin-left:3px;color:var(--accent)}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(79,142,247,.06)}
+tbody tr.top-row{background:rgba(52,199,123,.05)}
+td{padding:9px 12px;vertical-align:middle}
+tfoot td{padding:10px 12px;background:var(--card2);font-weight:600;border-top:1px solid var(--border);font-size:12px;position:sticky;bottom:0}
+
+/* NAME CELL */
+.name-cell{max-width:260px}
+.name-cell .short{font-weight:600;font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.name-cell .full-toggle{font-size:10px;color:var(--accent);cursor:pointer;margin-top:2px;display:inline-block}
+.name-cell .full{font-size:10px;color:var(--muted);margin-top:3px;display:none;white-space:normal;word-break:break-all;line-height:1.4}
+.name-cell.expanded .full{display:block}
+
+/* SPEND BAR */
+.spend-cell{min-width:130px}
+.spend-bar-wrap{background:var(--card2);border-radius:4px;height:6px;width:100%;margin-top:5px;overflow:hidden}
+.spend-bar{background:linear-gradient(90deg,var(--accent),#7c9dfc);height:100%;border-radius:4px}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:.3px;margin-right:3px;white-space:nowrap}
+.b-pf{background:rgba(14,165,233,.18);color:#7dd3fc;border:1px solid rgba(14,165,233,.35)}
+.b-st{background:rgba(16,185,129,.18);color:#6ee7b7;border:1px solid rgba(16,185,129,.35)}
+.b-cp{background:rgba(255,153,0,.18);color:#fbbf24;border:1px solid rgba(255,153,0,.35)}
+.b-gf{background:rgba(236,72,153,.18);color:#f9a8d4;border:1px solid rgba(236,72,153,.35)}
+.b-off{background:rgba(123,130,160,.15);color:var(--muted);border:1px solid rgba(123,130,160,.3)}
+.b-top{background:rgba(52,199,123,.2);color:var(--green);border:1px solid rgba(52,199,123,.4)}
+
+/* COLORS */
+.g{color:var(--green);font-weight:600}
+.m{color:var(--orange);font-weight:600}
+.r{color:var(--red);font-weight:600}
+.n{color:var(--muted)}
+
+/* LINKS */
+.am-link{display:inline-block;background:rgba(79,142,247,.15);color:var(--accent);border:1px solid rgba(79,142,247,.3);border-radius:4px;padding:2px 8px;font-size:11px;text-decoration:none;white-space:nowrap}
+.am-link:hover{background:rgba(79,142,247,.3)}
+
+/* GUIDE INPUT */
+.guide-cell{min-width:110px}
+.guide-input-area{font-size:11px}
+.guide-input-area a{color:var(--purple);text-decoration:underline;word-break:break-all;font-size:11px}
+.guide-btn{background:rgba(124,58,237,.15);color:var(--purple);border:1px solid rgba(124,58,237,.3);border-radius:4px;padding:2px 8px;font-size:10px;cursor:pointer;white-space:nowrap;margin-top:2px;display:inline-block}
+.guide-btn:hover{background:rgba(124,58,237,.3)}
+
+/* INSIGHTS */
+.insights{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:700px){.insights{grid-template-columns:1fr}}
+.insight-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.insight-card .tag{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
+.insight-card .hl{font-size:16px;font-weight:700;margin-bottom:6px}
+.insight-card .desc{font-size:12px;color:var(--muted);line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>에센허브 · <span>국내 Meta Ads</span> 리포트 <span style="font-size:14px;color:var(--muted);font-weight:400">(한눈에 보기)</span></h1>
+      <div class="header-meta">기간: 2026/06/01 – 06/30 (30일 전체 집행) &nbsp;·&nbsp; 통화: KRW &nbsp;·&nbsp; 계정: 에센허브_오피셜 국내 (ID: 991562294322608) &nbsp;·&nbsp; 원본 데이터: "[6월 레포트] 에센허브 국내.html" 파일 참고</div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);text-align:right">퍼포먼스 마케터 리포트<br>작성일 2026-07-20</div>
+  </div>
+  <div class="notice">
+    <span style="flex-shrink:0">⚠️</span>
+    <span><strong>6/18 지출 ₩400,793</strong> — 한 달 중 하루 지출이 가장 컸던 날로 월 전체 지출의 20.1%를 차지했어요. 원인(예산 변경/신규 캠페인 시작) 확인을 권장합니다.</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- KPI -->
+<div class="sec">핵심 지표 (6/1–6/30, 30일 전체 집행)</div>
+<div class="kpi-grid">
+  <div class="kpi"><div class="l">총 지출</div><div class="v">₩1,997,309</div><div class="s">일평균 ₩66,577 (30일)</div></div>
+  <div class="kpi good"><div class="l">CTR (링크클릭률)</div><div class="v">3.25%</div><div class="s">링크클릭 10,863 / 노출 334,381</div></div>
+  <div class="kpi good"><div class="l">CPC</div><div class="v">₩184</div><div class="s">링크클릭 기준</div></div>
+  <div class="kpi"><div class="l">CPM</div><div class="v">₩5,973</div><div class="s">노출 1,000회당</div></div>
+  <div class="kpi"><div class="l">노출</div><div class="v">334,381</div><div class="s">전체클릭 기준 CTR 3.37%</div></div>
+  <div class="kpi"><div class="l">링크 클릭</div><div class="v">10,863</div><div class="s">랜딩 이동 기준</div></div>
+  <div class="kpi"><div class="l">도달</div><div class="v">272,210</div><div class="s">–</div></div>
+  <div class="kpi"><div class="l">빈도</div><div class="v">1.23</div><div class="s">도달 대비 노출</div></div>
+</div>
+
+<!-- CHARTS -->
+<div class="sec">지출 현황</div>
+<div class="chart-row">
+  <div class="chart-card">
+    <h3>일별 지출 (₩) · 6/1–6/30</h3>
+    <div class="chart-wrap"><canvas id="spendChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <h3>캠페인별 지출 비중 (상위 6개 + 기타 17개)</h3>
+    <div class="chart-wrap"><canvas id="campaignChart"></canvas></div>
+  </div>
+</div>
+
+<!-- WEEKLY -->
+<div class="sec">주차별 지표 요약</div>
+<div class="table-card">
+  <table>
+    <thead><tr><th>#</th><th>주차</th><th>기간</th><th>지출</th><th>비중</th><th>노출</th><th>링크클릭</th><th>CTR</th><th>CPC</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>1주차</td><td>6/1–6/7</td><td>₩711,493</td><td class="n">35.6%</td><td>86,339</td><td>3,904</td><td class="g">4.52%</td><td class="g">₩182</td></tr>
+      <tr><td>2</td><td>2주차</td><td>6/8–6/14</td><td>₩324,682</td><td class="n">16.3%</td><td>45,091</td><td>2,149</td><td class="g">4.77%</td><td class="g">₩151</td></tr>
+      <tr><td>3</td><td><strong>3주차</strong></td><td>6/15–6/21</td><td><strong>₩741,011</strong></td><td class="n">37.1%</td><td>177,771</td><td>3,684</td><td class="m">2.07%</td><td class="m">₩201</td></tr>
+      <tr><td>4</td><td>4주차</td><td>6/22–6/28</td><td>₩193,616</td><td class="n">9.7%</td><td>20,904</td><td>926</td><td class="g">4.43%</td><td class="m">₩209</td></tr>
+      <tr><td>5</td><td>5주차</td><td>6/29–6/30</td><td>₩26,507</td><td class="n">1.3%</td><td>4,276</td><td>200</td><td class="g">4.68%</td><td class="m">₩133</td></tr>
+    </tbody>
+    <tfoot><tr><td></td><td>합계</td><td>6/1–6/30</td><td>₩1,997,309</td><td>100%</td><td>334,381</td><td>10,863</td><td>3.25%</td><td>₩184</td></tr></tfoot>
+  </table>
+</div>
+
+<!-- CAMPAIGN TABLE -->
+<div class="sec">캠페인별 효율 (23개)<span class="sec-note">검색 · 랜딩 필터 · 우측 드롭다운/열 제목 클릭 정렬 지원</span></div>
+<div class="legend-note">
+  <span><span class="badge b-top">🏆 TOP</span> 지출 상위 3위 캠페인</span>
+  <span><span class="g">초록</span> = CTR 5%↑ / CPC ₩150↓ (우수)</span>
+  <span><span class="m">주황</span> = 보통</span>
+  <span><span class="r">빨강</span> = 저조 (링크클릭 목적 기준)</span>
+  <span>막대바 = 지출 규모 (최대 지출 대비 비율)</span>
+</div>
+<div class="toolbar">
+  <input class="search-input" id="campSearch" type="text" placeholder="🔍 캠페인명 검색...">
+  <span class="chip active" data-land="all" onclick="setCampLand('all',this)">전체 23</span>
+  <span class="chip" data-land="프로필" onclick="setCampLand('프로필',this)">프로필 17</span>
+  <span class="chip" data-land="스마트스토어" onclick="setCampLand('스마트스토어',this)">스마트스토어 3</span>
+  <span class="chip" data-land="쿠팡" onclick="setCampLand('쿠팡',this)">쿠팡 2</span>
+  <span class="chip" data-land="구글폼" onclick="setCampLand('구글폼',this)">구글폼 1</span>
+  <select class="sort-select" id="campSortSelect" onchange="onCampSortChange(this.value)">
+    <option value="spend_desc">지출 높은순</option>
+    <option value="spend_asc">지출 낮은순</option>
+    <option value="startVal_asc">시작일 빠른순</option>
+    <option value="startVal_desc">시작일 늦은순</option>
+  </select>
+  <span class="count-badge" id="campCount"></span>
+</div>
+<div class="table-card">
+  <div class="table-scroll">
+  <table>
+    <thead><tr>
+      <th>#</th><th>캠페인</th><th>상태</th>
+      <th class="sortable" data-key="startVal" onclick="sortCamp('startVal',this)">기간</th>
+      <th class="sortable" data-key="spend" onclick="sortCamp('spend',this)">지출</th>
+      <th>비중</th>
+      <th class="sortable" data-key="imp" onclick="sortCamp('imp',this)">노출</th>
+      <th class="sortable" data-key="clk" onclick="sortCamp('clk',this)">링크클릭</th>
+      <th class="sortable" data-key="cpcVal" onclick="sortCamp('cpcVal',this)">CPC</th>
+      <th class="sortable" data-key="ctrVal" onclick="sortCamp('ctrVal',this)">CTR</th>
+    </tr></thead>
+    <tbody id="campTbody"></tbody>
+    <tfoot><tr>
+      <td colspan="4">합계 / 가중평균 (23개)</td>
+      <td>₩1,997,309</td><td>100%</td><td>334,381</td><td>10,863</td><td>₩184</td><td>3.25%</td>
+    </tr></tfoot>
+  </table>
+  </div>
+</div>
+
+<!-- AD TABLE -->
+<div class="sec">소재(Ad)별 효율 (23개)<span class="sec-note">검색 · 랜딩 필터 · 열 제목 클릭 정렬 · 가이드라인 링크 등록 가능</span></div>
+<div class="toolbar">
+  <input class="search-input" id="adSearch" type="text" placeholder="🔍 소재명 검색...">
+  <span class="chip active" data-land="all" onclick="setAdLand('all',this)">전체 23</span>
+  <span class="chip" data-land="프로필" onclick="setAdLand('프로필',this)">프로필 17</span>
+  <span class="chip" data-land="스마트스토어" onclick="setAdLand('스마트스토어',this)">스마트스토어 3</span>
+  <span class="chip" data-land="쿠팡" onclick="setAdLand('쿠팡',this)">쿠팡 2</span>
+  <span class="chip" data-land="구글폼" onclick="setAdLand('구글폼',this)">구글폼 1</span>
+  <span class="count-badge" id="adCount"></span>
+</div>
+<div class="table-card">
+  <div class="table-scroll">
+  <table>
+    <thead><tr>
+      <th>#</th><th>소재</th>
+      <th class="sortable" data-key="spend" onclick="sortAd('spend',this)">지출</th>
+      <th class="sortable" data-key="imp" onclick="sortAd('imp',this)">노출</th>
+      <th class="sortable" data-key="clk" onclick="sortAd('clk',this)">링크클릭</th>
+      <th class="sortable" data-key="cpcVal" onclick="sortAd('cpcVal',this)">CPC</th>
+      <th class="sortable" data-key="ctrVal" onclick="sortAd('ctrVal',this)">CTR</th>
+      <th>랜딩</th><th>소재 미리보기</th><th>가이드라인</th>
+    </tr></thead>
+    <tbody id="adTbody"></tbody>
+  </table>
+  </div>
+</div>
+
+<!-- INSIGHTS -->
+<div class="sec">인사이트 요약</div>
+<div class="insights">
+  <div class="insight-card">
+    <div class="tag">💰 최대 지출 캠페인</div>
+    <div class="hl" style="color:var(--accent)">₩678,726 (34.0%)</div>
+    <div class="desc">"운명 팝업 현장 릴스_프로필 랜딩" — 단일 캠페인이 월 전체 지출의 1/3 이상 차지. CTR 5.00%, CPC ₩130으로 준수한 효율.</div>
+  </div>
+  <div class="insight-card">
+    <div class="tag">🏆 Best CTR / CPC</div>
+    <div class="hl" style="color:var(--green)">CTR 5.22% · CPC ₩81</div>
+    <div class="desc">"운명 팝업 현장 릴스_스마트스토어 랜딩" — 링크클릭 1,628 / 노출 31,213. 전체 캠페인 중 CTR·CPC 모두 최상위.</div>
+  </div>
+  <div class="insight-card">
+    <div class="tag">⚠️ 지출 급증일</div>
+    <div class="hl" style="color:var(--orange)">6/18 ₩400,793</div>
+    <div class="desc">하루 지출이 월 평균(₩66,577)의 6배. 노출 136,418회로 동반 급증. 3주차(6/15–6/21) 전체 지출의 절반 이상이 이날 하루에 집중.</div>
+  </div>
+  <div class="insight-card">
+    <div class="tag">📍 랜딩별 분포</div>
+    <div class="hl" style="color:var(--accent)">프로필 17개 · 스마트스토어 3개</div>
+    <div class="desc">프로필 랜딩이 23개 캠페인 중 17개로 대다수. 쿠팡 랜딩 2개, 구글폼 랜딩 1개는 소액 테스트 성격. 스마트스토어 랜딩(3개)의 CTR·CPC가 가장 우수해 예산 확대 검토 여지.</div>
+  </div>
+  <div class="insight-card">
+    <div class="tag">💸 참여 목적 캠페인</div>
+    <div class="hl" style="color:var(--red)">CPC ₩1,400~10,474</div>
+    <div class="desc">"기존 게시물_참여"류 10개 캠페인은 참여(OUTCOME_ENGAGEMENT) 목적이라 링크클릭이 거의 없음. 링크클릭 CPC로 판단하면 안 되고, 참여 목적 성과(도달·참여수)로 별도 평가 필요.</div>
+  </div>
+  <div class="insight-card">
+    <div class="tag">📊 계정 현황</div>
+    <div class="hl">30일 풀가동</div>
+    <div class="desc">6월 한 달간 23개 캠페인 운영, 총 지출 ₩1,997,309·링크클릭 10,863건. 7월 리포트에서 3주차 급증 원인과 스마트스토어 랜딩 확장 여부를 함께 점검 권장.</div>
+  </div>
+</div>
+
+<div style="height:40px"></div>
+</div><!-- /container -->
+
+<script>
+const TOTAL = 1997309;
+
+// ── CAMPAIGN DATA ──
+const campsRaw = [
+  {name:'260529 운명 팝업 현장 릴스_프로필 랜딩_6/1 11시 3->5만원, 6.9 17시 결제때문에 잠시off, 6.11 최대표님 요청으로 다시 ON 5->2만원, 6/18 (2->1만원)', short:'운명 팝업 현장 릴스 (프로필)', status:'PAUSED', spend:678726, imp:104148, clk:5209, start:'5/29', end:'–', landing:'프로필'},
+  {name:'260618 영업팀(쿠팡 랜딩)_티틀리 데일리 워시 (7-12시)', short:'티틀리 데일리 워시 (쿠팡)', status:'PAUSED', spend:293314, imp:128038, clk:1675, start:'6/18', end:'–', landing:'쿠팡'},
+  {name:'260601 퀵버블_스마트 스토어 랜딩_저 이게 이거 없으면 화장 못해요, 윤주님_릴스_6/9 off_6/16 2만원으로 재가동_6/18 off', short:'퀵버블 스마트스토어 랜딩 (릴스)', status:'PAUSED', spend:288457, imp:22258, clk:997, start:'6/1', end:'–', landing:'스마트스토어'},
+  {name:'260617 홈스파 챌린지_퀵버블+엠플_프로필 랜딩_이미지_6/22까지', short:'홈스파 챌린지 (퀵버블+엠플)', status:'PAUSED', spend:199792, imp:10680, clk:230, start:'6/17', end:'6/21', landing:'프로필'},
+  {name:'260602 퀵앤딥_14일 챌린저 모집_프로필 랜딩_이미지_6.9 17시 결제때문에 잠시off', short:'퀵앤딥 14일 챌린저 모집', status:'PAUSED', spend:148821, imp:14943, clk:384, start:'6/2', end:'–', landing:'프로필'},
+  {name:'260611 운명 팝업 현장 릴스_스마트스토어 랜딩_6/18 off', short:'운명 팝업 현장 릴스 (스마트스토어)', status:'PAUSED', spend:132569, imp:31213, clk:1628, start:'6/11', end:'–', landing:'스마트스토어'},
+  {name:'260605 인턴 모집_구글폼 랜딩_이미지_6/8 대표님 요청으로 off', short:'인턴 모집 (구글폼)', status:'PAUSED', spend:50842, imp:8903, clk:428, start:'6/5', end:'6/11', landing:'구글폼'},
+  {name:'260623 기존 게시물_프로필 랜딩_소중한 순간을_이미지_6/26까지', short:'기존게시물 - 소중한 순간을', status:'PAUSED', spend:49858, imp:5073, clk:252, start:'6/23', end:'6/26', landing:'프로필'},
+  {name:'260619 이벤트_프로필랜딩_이미지_6/22 18시 off', short:'이벤트 (프로필, 6/19~)', status:'PAUSED', spend:32644, imp:1405, clk:14, start:'6/19', end:'6/24', landing:'프로필'},
+  {name:'260618 이벤트_프로필랜딩_이미지_예산 오류로 off', short:'이벤트 (예산 오류 재게재)', status:'PAUSED', spend:21197, imp:1991, clk:11, start:'6/18', end:'6/25', landing:'프로필'},
+  {name:'260622 기존_국내 이벤트 프로필 랜딩 (-6/24), 이전 광고 cpc 오류 같아서 새로 광고', short:'국내 이벤트 (재게재)', status:'PAUSED', spend:19726, imp:628, clk:8, start:'6/22', end:'6/24', landing:'프로필'},
+  {name:"260605 기존 게시물_참여_프로필 랜딩_이미지_What's your skin concern?_6/7 off", short:"참여 - What's your skin concern?", status:'PAUSED', spend:10474, imp:285, clk:1, start:'6/5', end:'6/6', landing:'프로필'},
+  {name:'260627 기존 게시물_참여_프로필 랜딩_이미지+영상_6/29까지', short:'참여 - 새로운 이야기가 됩니다', status:'PAUSED', spend:10000, imp:589, clk:4, start:'6/27', end:'6/28', landing:'프로필'},
+  {name:'260623 기존 게시물_참여_프로필 랜딩_참여(소중한 순간을, -6/25)', short:'참여 - 소중한 순간을', status:'PAUSED', spend:10000, imp:190, clk:1, start:'6/23', end:'6/25', landing:'프로필'},
+  {name:'260621 기존 게시물_참여 (전통에서 영감을 얻고, -6/23)', short:'참여 - 전통에서 영감을', status:'PAUSED', spend:9959, imp:2046, clk:1, start:'6/21', end:'6/23', landing:'프로필'},
+  {name:'260616 기존 게시물_참여_프로필 랜딩_전통은 영감이 되고_6/18까지', short:'참여 - 전통은 영감이', status:'PAUSED', spend:9831, imp:464, clk:7, start:'6/16', end:'6/17', landing:'프로필'},
+  {name:'260608 기존 게시물_참여_프로필 랜딩_이미지_버블 속에 꽁 채운 6가지 피부 해답_6/9 17시 off', short:'참여 - 버블 속 6가지 해답', status:'PAUSED', spend:7722, imp:252, clk:1, start:'6/8', end:'6/10', landing:'프로필'},
+  {name:'260614 기존 게시물_참여_프로필 랜딩_이미지_전통의 영감 (-6/15)', short:'참여 - 전통의 영감', status:'PAUSED', spend:6735, imp:460, clk:3, start:'6/14', end:'6/15', landing:'프로필'},
+  {name:'260609 기존 게시물_참여_프로필 랜딩_이미지_여름의 뜨거운 온도는 낮추고', short:'참여 - 여름 온도', status:'PAUSED', spend:5245, imp:133, clk:1, start:'6/9', end:'6/10', landing:'프로필'},
+  {name:'260629 기존 게시물_참여_프로필 랜딩_이미지_7/1까지', short:'참여 (7/1까지)', status:'PAUSED', spend:4731, imp:352, clk:3, start:'6/29', end:'6/30', landing:'프로필'},
+  {name:'260612 기존 게시물_참여_이미지_Summer Essentials_6/13 off (3천원->만원)', short:'참여 - Summer Essentials', status:'PAUSED', spend:4296, imp:93, clk:null, start:'6/12', end:'6/13', landing:'프로필'},
+  {name:'260506 퀵버블_랜딩스스(저 이게 이거 없으면 화장 못해요, 윤주님) 5/11 오후9시 off, 5/29 다시 ON 1일 3만원, 6/1 11시 off(새로 만듦)', short:'퀵버블 스마트스토어 (재가동)', status:'PAUSED', spend:2172, imp:170, clk:5, start:'5/6', end:'–', landing:'스마트스토어'},
+  {name:'260531 데일리워시_영업팀_ 쿠팡 랜딩_이미지_6/1 오전7시까지', short:'데일리워시 (쿠팡)', status:'PAUSED', spend:198, imp:67, clk:null, start:'5/31', end:'5/31', landing:'쿠팡'},
+];
+
+// ── AD DATA (id: 소재 원본 Ad ID, guideline localStorage 키로 사용) ──
+const adsRaw = [
+  {id:'120245217514540232', name:'260529 운명 팝업 현장 릴스', short:'운명 팝업 현장 릴스', spend:678726, imp:104148, clk:5209, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQILezAcB4mvW8kvlKsmo9jo8QciQvvebWCDiX07iQu15liyrIWmXaDycYCczqCLPzBRcBHFC5bDHafMMYgTmvCv89szDIZTAts4IKq7qVJE14f38Y4WMlSbpDcKD6UQ2wXdF91yyhmyTKGMsirXPYLkmCz8ajVJAp4tpQn7p-HR66dmCO7W-w69HAWAwz6PSPAbZ7Pt2n346z96dm28zPgMXsy2XARsGUNnkMrfuz9wPA&t=AQITIs63LQ99WHxyi_U'},
+  {id:'120246546353360232', name:'배경 초록 광고', short:'배경 초록 광고', spend:293314, imp:128038, clk:1675, landing:'쿠팡', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQJYUwfOT2eHHdF0LYOKWQBzb4TKQhyBZGCq2mGvNBR3dn6qPCRrmlzABNT_J0HXAUzKwBSrX97I4AvcUCEIxbSBOMAF9a5Ksw28cGpxA4_HC4Kao9H_s6Vj-Gjjr6yY4EmV7mcmQtYlph09q5A2En2Yy9f4vxJ3WhH1YXp2avuCrbFO3ZfkPYnPa29r9Rd7aiZqB_dbUbJLemIMephyX8v5s8utvfDt9q-BRoAOFFSbrw&t=AQIZXT3qsokjRSFeytg'},
+  {id:'120245421058560232', name:'260601 퀵버블_랜딩스스(저 이게 이거 없으면 화장 못해요, 윤주님)', short:'퀵버블 랜딩스스', spend:288457, imp:22258, clk:997, landing:'스마트스토어', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQLCBd-zJ58Po4HVy8bL_JBO7CQY8nt9HIE3414ZFShc1ukQBGoumf2bkRYmRYeRYbR6vOwD4ETFmAIrXDEHxxn4kY4o1gdyhsrZTSksNv55V7MR9CwLOJM2xyWZauqFu5jz9nX4eXFVJQHZokqrmo-xGxeafeAm4-Q5Owc6J1-iqUqnV-H_ZNPMFNS1HW9upoTA1rzAP_d-GEXxJBd6wvkkQdyDznNrEA-SIl1FbcI1Gg&t=AQKwmoDvkLF-B_vCE-A'},
+  {id:'120246625736070232', name:'260617 홈스파 챌린지 퀵버블+엠플(UGC CREATOR CALL, 6/22)', short:'홈스파 챌린지 (UGC)', spend:199792, imp:10680, clk:230, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQKOtcI5vc0NGwzl2zZwrdkKOfbXCZziTPuy2Ijte3bAmDrtN41tob4_bAURH_X3FuBPUi-AnIb-2cFpVzv1uHYjGIS1r9QbxZhWvzxKABhDYIz9XxgcnhCsaLaW5o4TdkDAiw7Ns6nUVabY9bYOZR9Xjx6VTYdtqg5FokSRXOKWAWGmTwXwaweT_wJr68oStA6cmwy2kYLZ_slHwRSDCRdT5CYdxYBmxmX975_a2YxlNQ&t=AQIXVhknwczFtcpeOdg'},
+  {id:'120245502182050232', name:'피드/프로필피드/검색결과/릴스/스토리(9:16 이미지로 변경)', short:'피드/프로필/릴스 (9:16)', spend:148821, imp:14943, clk:384, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQL7aa1Qa1Mh8y9oHPfuogNfIlLo1NH_VTi14qWsrwy7-6zSfDVg9Hj2SpYrwnhrd2taw8HBbC2_HupW2Jddv5KQCgizDwvtiMUd2f4PJXsIHCyPja68P0vzoYTkNkwkNAyatdxdRg6NvLz8VhQrlbDWrUme1tebHHqXv9yzdrPLG7wc3q0xPeo71Tzb9ToOrXWK5lKjh_v8_Sn7V0J4bjzwAv85Oua5K74OoU4vpt6ZZQ&t=AQJDxzH43UgrUULZyPU'},
+  {id:'120246204863800232', name:'260611 운명 팝업 현장 릴스 (스스 랜딩)', short:'운명 팝업 현장 릴스 (스스)', spend:132569, imp:31213, clk:1628, landing:'스마트스토어', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQJatlxLx67ghld6ZVuW4BUzeLPXAqW-i7EIFgEWl63swSPRktF0WmOxMqtlcnkbP9V4do_14f-_TMJUZwRHukbwqTS-qiqOW-zbi3j3NdCSEwi1x1nE3rvgOMWfJA3Ilf53cMuS13VDhN2llGZC15C3JVRiuu_pXMQQZQ_wSfZfCKA6fAWmISfczHP-l5q45vebEZ7p8BUW4JTyyOflxG6-dUaoh_2dk7hv5R3EnzFyxg&t=AQK0YDjTN9iyDcSvEmk'},
+  {id:'120245776847310232', name:'260605 인턴 모집 (랜딩 구글폼, ~6/11)', short:'인턴 모집 (구글폼)', spend:50842, imp:8903, clk:428, landing:'구글폼', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQIb5rOOBZ1cuNXZcLuvo8PjOSWc577wMwUf_T5kUqUbcMaPMwa4oKwLAq99whuoodftRDz_325DZWLqNcgxdQbJUm-bXX0vb-JlvdcwP9syHDuXeK26WQmzuBmylbwMj8y93QHhDRsQwncgXtB7GrwDw2XnDygcb3Wy1uxGsPF4bmi9YbOLUxkVOzWTp8ndTOnYahHRJAXhm15OyeizSBML-e3p9RKrzLqUGTBWIaSaNQ&t=AQJk8lrfBZdlnbvhdzk'},
+  {id:'120247222895160232', name:'260623 기존 게시물_랜딩 프로필 (소중한 순간을, -6/26)', short:'기존게시물 - 소중한 순간을', spend:49858, imp:5073, clk:252, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQJ4kmKOokYQxhEmUsD-v6SZbaQDVm38rQddbA3hrC8aAu04gujkKwQmGjAAo844HG5ZzAfb738FRI3YkfRLxRc9U6IVxJPkmX_05F-2UALS5jn29_ZtiKUdF8aMmvTU9CZrL1FVp84JC_MeuYkRE3o2fCdp8PN5wcWedlKwT2_g5chA8Ey0iXyPD_KbUofcHE9e0WqcKZTM7btcPFgaQuDAtJBEziuW3KVCvqrdYzgFlQ&t=AQKF4_CXTWfYPiA3jKE'},
+  {id:'120246762299470232', name:'260619 기존_국내 이벤트 프로필 랜딩 (6/18 - 6/24)', short:'국내 이벤트 (6/18-6/24)', spend:32644, imp:1405, clk:14, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQI7ybNmXZkd04-WIJjXsEPEhvzCO-f74wdcwUxLe7dg-trgWVuLhZ2z61p37I0PL_SorDswUGqoBww3TdsJ-HXxuYOriNA_2I8NYMtHHhtEcfLTGy2lUfaeB7Ra_sXWYCPIGdo12MtgJ4NClHGsCfwl4kVbe0XBrzNSGdDVoFugGQMCTgTecGMsJxe5tI96FK8o1QMVEaONqYibBNoM9Z9Ij-UuPdY4-7lPJCmAKjNmdA&t=AQKXvVseCJQyR6DoW5A'},
+  {id:'120246708254390232', name:'260618 기존_국내 이벤트 (-6/25)', short:'국내 이벤트 (~6/25)', spend:21197, imp:1991, clk:11, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQJJk8zmo2kWPA08rfGvijViuEWdnZsn1z5zlUN6OATPXRivVEF7kGOEgB9vJJJY8wdv1ZfVwzbiho59O6Z9gHNp4rxaIFFzQViAM1oEeLFE9o8hrJI0gvFHmAQAM2o7pIXLJcyw_uG6t2KuYC-MYy_K1F0H9sDoD14B60BGJbmwbAeof8nVugZ1jlLW-uMUdYUCCnXzfmUuKvo0QqASXzlVBPQg-1p75x-ghMeVB0Uxqg&t=AQIMIjcqMv9DtILDcyU'},
+  {id:'120247121032290232', name:'260622 기존_국내 이벤트 프로필 랜딩 (-6/24) > 이전 광고 cpc 오류 같아서 새로 광고', short:'국내 이벤트 재게재', spend:19726, imp:628, clk:8, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQImO6-z9Si8qu_xURwtcFQA1p3fJT-z00ltNtqA2lFUKxtSeN6vWhYQdK37Z1F3qdYRqKbFxnb-5jiBA8qDkyPVZ3Ri-IXk1cl_ZiHwoCJNjC24wmSBB33suKtHEwek4FRaOW9cnkZq4v0gfjkQuENNPf-bA6Qx9ObB78ZctahZnfddvHSiZnKyfYQ3x5BxAh4GybxEpz4cl-lxXDRielAGNYvqJQebNQ2yX7Sa2SJsqA&t=AQJkMPS5oICgR9q_I20'},
+  {id:'120245773690900232', name:'피드/탐색홈 (기존게시물)', short:'피드/탐색홈', spend:10474, imp:285, clk:1, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQIGLOUx5Hwz2tTD9TbUmm5HMmrXFt1cC0rBaYW0XIWI7a793hBVqMgREb2zIby4xlcPimOiQ-IIzNH1rAo_4j_csNyx9NkUcU_f3WZMyraVAE_ol0EOXqje02xOIvOrBaiC5583bu_FViYSzc5Zk_uSg4pmzdmcEhjvqb5s1L8hP7BVVfGuUbtxb5pJMbaG8wd9OeFKtdoxSaYra-BdHQdQd62C5FIi1Dxr7pCnr2sGbA&t=AQL4abIY9OTRn5UU2oE'},
+  {id:'120247546611970232', name:'260627 기존 게시물_참여_프로필 랜딩_새로운 이야기가 됩니다_이미지+영상2장_6/29까지', short:'참여 - 새로운 이야기', spend:10000, imp:589, clk:4, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQK-BRgr01bjl0_fcn0xm2JqebtvRw0QajlHqiprZNhXYWtUYcnihzEEgbp-QbxLt8dP3O0J4e5NHVzCqeg7RuLpSwgiy9qfZH2Ac8t46A-ZpUWn6leDu2TNM3O8-bdMNSTF_bKqW8FzaVHGHjERZp4rJ4P_98ny0X1J7v3Zw-uN2hFJIqO0PKbZlUCnQjkju36gxPSQfTfVMejhWWtrWSj4Ea1oCNuLjZQaHug_qgKrZg&t=AQKAlH9JtCe5eMt_M5M'},
+  {id:'120247222640600232', name:'260623 기존 게시물_참여 (소중한 순간을, -6/25)', short:'참여 - 소중한 순간을', spend:10000, imp:190, clk:1, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQK6sW5mYPAzSFvt-Me146BRDEAZLwgpRPW38dKDUKcms-3iF42-WNqaOLJSRh8GqRacUiqX-n_SVUEmB5RTFAPwnYGdRXtllbkI8dx4HixiN4I48f6bVT-1audjZIBIJWt7Zqy-PyzBkeVDVJM2jLXv-i4ma3ooeMwULzulM3MKC_h42nPMduJ2MG7TUBRbmCjRCHoyI2C6c1aaKmM1dNs94P6HHT40KGuNdMdiTYzhsg&t=AQInzeP5gZbBIMamsYc'},
+  {id:'120247005784120232', name:'260621 기존 게시물_참여 (전통에서 영감을 얻고, -6/23)', short:'참여 - 전통에서 영감을', spend:9959, imp:2046, clk:1, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQJemOLu8IS5rDjTbmVosaNS_j15-BCWBUjhYNHQEF2L0YyRfO3lR5FIpzg29uB-rTU7SC8a-PBwd7Jwg0GMaGoXY_D1vs6vsBAGn0DW4USY5_0gbc7xN-1AfwuFbfDL9m3aeE1H4t9SzFA7Hwr9NSBaU9gtE1m2x1_Rme05Guir3sXdvS8--GmLdhK43MlvQigT-dIy9Z4DxxJ4K9gp1S1gwlyJW71QGDYAf4hQotWK_A&t=AQKK4pwW6CD3Haw5HGk'},
+  {id:'120246546993250232', name:'260616 기존_참여 (전통은 영감이 되고, -6/18)', short:'참여 - 전통은 영감이', spend:9831, imp:464, clk:7, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQJAVEHpjW_xwig3lBOw8TVw-opTUqccgehXP8E6XtDi1bFt9is5yLFntq5lnPAddGN9NNuDbYzLMRhDIhu6J6ZiIoHF6plqlQYTh82yyX2NRNeayBNnFvbM4Io2xoqzY3qf7e1vgMDk9ZaeTl0c9DsjSbNVVp7v0PfZrRU5LClwNlK29KKGPeAXtarDJYL_nsDWcG2HRRBhVwntGFAmxHNwln0oci_paGDpmSaKbyJ-3A&t=AQI7I9vl35YCK60bMUo'},
+  {id:'120245981925200232', name:'피드/탐색홈 (기존게시물)', short:'피드/탐색홈', spend:7722, imp:252, clk:1, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQIKfa-moA8T-rRTQDfkjKdtxhAgFWPL6sB-Zk1NAu0kDCd8C61Os-w57Dkm63E90Nrw3M-yUNvbigxdzBeNaRGxP8CGaXiX_-kGp05RQlLNdCxY4a5Mfgf6zPrPN83F_M7QLyznQyhVmyDXwo_z4HuQSC1Y-90NYfnBqsD_-qNhBW2__8ycY0TzEt4Ndcxh63kI-zSstt4_bOr-5NaBWOJkbqN_lP1VZ9QYG34h7INwaw&t=AQL2rCBvymLwGGQEZLs'},
+  {id:'120246404865670232', name:'260614 기존_참여, 전통의 영감 (-6/15)', short:'참여 - 전통의 영감', spend:6735, imp:460, clk:3, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQKl4vHCo__VH1OmkqpBh66sNl-v7Chg2On5Jg1jSFv81iQgkjpAwTWsKr9a1cXBq7Jbu927lrEKNrdVO9QzGsEilkLwf0Q9kcVci5eKYksUgdItqzAilxQ0AncYSteTFRYnY1BSj00UNJVKIngzGGDAUnyqAxJduZ2N--b6hdwqVCqH2rEh_UPw3WZv0YMiyVs-xb4n0aagvDa7gs6lqhTt2vK8_bKfRReHp3Ewd8YoMQ&t=AQJ1Rnmuod8GatjOAQE'},
+  {id:'120246069781180232', name:'260609 기존_참여, 여름의 뜨거운 온도는 낮추고', short:'참여 - 여름 온도', spend:5245, imp:133, clk:1, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQIaL9RN4g8RA3SDCNmlGPZw8XBmAOn87EUanTU8xB2VGQE2ViGdJopHG9cGZZflZtYU0wlFzx0djGE_9WiQ5kJ8l8DzFKWzSVJYOZnEz9yQTT6cVZfVKOr6L9rZzp1CNgCaEKet6wmuHD4qu4mJmw_Gt5v1DEYfCZY9ne2RJeJmUgKQbkgAKKZSK2Kl6LFJgjS_B_a4DD92nxB-VioZgC_7WGjSUI0gpkijRwAk_twOkQ&t=AQK6TLr2YY6214J9DU0'},
+  {id:'120247676473360232', name:'260629 기존 게시물_참여_프로필 랜딩_이미지_7/1까지', short:'참여 (7/1까지)', spend:4731, imp:352, clk:3, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQKNT_uNIP2NryuBlk2lkPDAxVnwb1dEyKL5oPYXYO_O-I3-uBdwsa-_l4idx1a1SAK-ZrHV-ihLE4h-WHwLhpRm27qrO51xOzepDCR_F2xHy8E4Q4ntGTNMvcztzr39Uv6MToUUvjYiokaDPwaFKZbbcxSqSrOTqIttWU8pjQi5SMwFpFU4RS1vBLI81Ah-LarDP2HJMiFcVdsLGxttQxtmjmxTOnQjtKMG6-I38P9o4Q&t=AQKlwwTtkASlTw5AumY'},
+  {id:'120246269417150232', name:'260612 기존 게시물_참여 "Summer Essentials:"', short:'참여 - Summer Essentials', spend:4296, imp:93, clk:null, landing:'프로필', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQKXmer0aE15j0TD3Tl898lEkPc1rAif5HbrBwcuoySPFI7GOMJeXw7lTraHhsYSwyvM-vOdr3EBJioGid07KwYNH8YWGuaHgpiXUdonLkRP5GSDCqqPEBcona-ctyWvmTpidTihMIpeGQq-Xf6Z0FEK3CFugW69YbYqBtlpRWyfaEkCZTTJz4HhZzyQQvtWrFRS8xm4Ycv9NrDa2vCcMj-yd0fvLrZ8n3FiXXd8DPSFZQ&t=AQJeNNPjpUccpQnBGgY'},
+  {id:'120243554623480232', name:'260506 퀵버블_랜딩스스(저 이게 이거 없으면 화장 못해요, 윤주님) 5/11 오후9시 off, 5/29 다시 ON 1일 3만원', short:'퀵버블 랜딩스스 (재가동)', spend:2172, imp:170, clk:5, landing:'스마트스토어', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQKURkDQr6kc56LTsuaPPOh6rNMT5LKllgY-aUMWWyEErmu4otr_Vdo-yPG_nMNUMh4mtp8KfFELGa3npbVnxRPS_3ed6ifXQIhL3SXMZH4Xx01CkIgWCOLvn3oS58HTqeQYWIVwG-c9P6FiFUibHUcSiS4ERCS5V4qVJZ7IVKEI89dCEhaUdV50n7uXnuMIwqb6EpDIoS0MkpJHd3o2QwCzxoepkO4SkCGNODX-qMxC_w&t=AQIIj5-1dWayAqwFNmg'},
+  {id:'120245189048660232', name:'프로필피드/탐색홈/스레드', short:'프로필피드/스레드', spend:198, imp:67, clk:null, landing:'쿠팡', preview:'https://business.facebook.com/ads/api/preview_iframe.php?d=AQKEajgRCw1kgUIIjd5dsX_Hp9gAUdNpxtrBQzWkXTWu_ovd9iV3Ens-Y2UhignNiHHi922AgfcGiKLmQgJgthWewQmPJ194puzrFM2NZHm_0YRHqghyFV7bCr5QdKEgr8b4Yph8ptGOSLOijmNVYbPcRpWVVgQjFtiX9-ZxTB7-6m91B68YgfkTnyVks20LvCwDd9NE_PIndFL5K9FoZV_LnS8kKYRG3UA6B7LvbswvaA&t=AQLmi5iPiVvKjx9m6KY'},
+];
+
+// ── HELPERS ──
+function krw(v){ return '₩'+Math.round(v).toLocaleString('ko-KR'); }
+function parseStart(s){ const m=s.match(/(\d+)\/(\d+)/); return m? parseInt(m[1],10)*100+parseInt(m[2],10) : 9999; }
+function landingBadge(l){
+  const m={'프로필':'b-pf','스마트스토어':'b-st','쿠팡':'b-cp','구글폼':'b-gf'};
+  return `<span class="badge ${m[l]||'b-pf'}">${l}</span>`;
+}
+function cpcClass(v){ return v===Infinity?'n':v<=150?'g':v<=500?'m':'r'; }
+function ctrClass(v){ return v<0?'n':v>=5?'g':v>=2?'m':'r'; }
+function cpcText(v){ return v===Infinity? '—' : krw(v); }
+function ctrText(v){ return v<0? '—' : v.toFixed(2)+'%'; }
+function maxSpend(arr){ return Math.max(...arr.map(x=>x.spend)); }
+
+// 파생 지표 계산
+const camps = campsRaw.map(c=>({
+  ...c,
+  startVal: parseStart(c.start),
+  cpcVal: c.clk ? c.spend/c.clk : Infinity,
+  ctrVal: (c.clk && c.imp) ? (c.clk/c.imp*100) : -1
+}));
+const ads = adsRaw.map(a=>({
+  ...a,
+  cpcVal: a.clk ? a.spend/a.clk : Infinity,
+  ctrVal: (a.clk && a.imp) ? (a.clk/a.imp*100) : -1
+}));
+const campMaxSpend = maxSpend(camps);
+const adMaxSpend = maxSpend(ads);
+const top3CampIds = [...camps].sort((a,b)=>b.spend-a.spend).slice(0,3).map(c=>c.name);
+
+// ── STATE ──
+let campState = {key:'spend', dir:'desc', land:'all', q:''};
+let adState = {key:'spend', dir:'desc', land:'all', q:''};
+
+function setCampLand(l,el){ campState.land=l; document.querySelectorAll('#camp-toolbar-x').forEach(()=>{}); document.querySelectorAll('.toolbar .chip').forEach(c=>{}); [...el.parentElement.children].forEach(c=>c.classList.remove('active')); el.classList.add('active'); renderCampTable(); }
+function setAdLand(l,el){ adState.land=l; [...el.parentElement.children].forEach(c=>c.classList.remove('active')); el.classList.add('active'); renderAdTable(); }
+function sortCamp(key,th){
+  if(campState.key===key) campState.dir = campState.dir==='desc'?'asc':'desc';
+  else { campState.key=key; campState.dir='desc'; }
+  syncCampSortSelect();
+  renderCampTable();
+}
+function onCampSortChange(val){
+  const idx = val.lastIndexOf('_');
+  campState.key = val.slice(0,idx);
+  campState.dir = val.slice(idx+1);
+  renderCampTable();
+}
+function syncCampSortSelect(){
+  const sel = document.getElementById('campSortSelect');
+  const val = `${campState.key}_${campState.dir}`;
+  if(sel && [...sel.options].some(o=>o.value===val)) sel.value = val;
+}
+function sortAd(key,th){
+  if(adState.key===key) adState.dir = adState.dir==='desc'?'asc':'desc';
+  else { adState.key=key; adState.dir='desc'; }
+  renderAdTable();
+}
+document.addEventListener('input',(e)=>{
+  if(e.target.id==='campSearch'){ campState.q=e.target.value.trim(); renderCampTable(); }
+  if(e.target.id==='adSearch'){ adState.q=e.target.value.trim(); renderAdTable(); }
+});
+
+function filterSort(arr, state){
+  let out = arr.filter(x=> state.land==='all' || x.landing===state.land);
+  if(state.q) out = out.filter(x => (x.short+x.name).toLowerCase().includes(state.q.toLowerCase()));
+  out = [...out].sort((a,b)=>{
+    const va=a[state.key], vb=b[state.key];
+    const av = va===Infinity? -Infinity : va;
+    const bv = vb===Infinity? -Infinity : vb;
+    return state.dir==='desc' ? bv-av : av-bv;
+  });
+  return out;
+}
+function updateArrows(prefix, state){
+  document.querySelectorAll(`#${prefix}Tbody`).forEach(()=>{});
+  document.querySelectorAll(`th.sortable`).forEach(th=>{
+    th.innerHTML = th.innerHTML.replace(/\s*<span class="sort-arrow">.*<\/span>/,'');
+  });
+}
+
+function nameCell(short, full){
+  const id = 'nm'+Math.random().toString(36).slice(2,9);
+  return `<div class="name-cell" id="${id}">
+    <span class="short" title="${full.replace(/"/g,'&quot;')}">${short}</span>
+    <span class="full-toggle" onclick="document.getElementById('${id}').classList.toggle('expanded')">원본 전체보기</span>
+    <span class="full">${full}</span>
+  </div>`;
+}
+
+// ── RENDER CAMPAIGN TABLE ──
+function renderCampTable(){
+  const list = filterSort(camps, campState);
+  document.getElementById('campCount').textContent = `표시 중 ${list.length} / 23개`;
+  const tb=document.getElementById('campTbody');
+  tb.innerHTML = list.map(c=>{
+    const isTop = top3CampIds.includes(c.name);
+    const barPct = (c.spend/campMaxSpend*100).toFixed(1);
+    const period = c.end==='–' ? `${c.start} ~` : `${c.start} – ${c.end}`;
+    const pct = ((c.spend/TOTAL)*100).toFixed(1);
+    return `<tr class="${isTop?'top-row':''}">
+      <td class="n">${isTop?'<span class=\"badge b-top\">TOP</span>':''}</td>
+      <td>${nameCell(c.short, c.name)}</td>
+      <td><span class="badge b-off">종료</span></td>
+      <td style="font-size:11px;color:var(--muted);white-space:nowrap">${period}</td>
+      <td class="spend-cell">${krw(c.spend)}<div class="spend-bar-wrap"><div class="spend-bar" style="width:${barPct}%"></div></div></td>
+      <td class="n">${pct}%</td>
+      <td>${c.imp?c.imp.toLocaleString():'<span class="n">—</span>'}</td>
+      <td>${c.clk!==null?c.clk.toLocaleString():'<span class="n">—</span>'}</td>
+      <td class="${cpcClass(c.cpcVal)}">${cpcText(c.cpcVal)}</td>
+      <td class="${ctrClass(c.ctrVal)}">${ctrText(c.ctrVal)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── RENDER AD TABLE ──
+function guideCell(adId){
+  const saved = localStorage.getItem('guide_'+adId);
+  if(saved){
+    return `<div class="guide-input-area"><a href="${saved}" target="_blank">${saved.length>26?saved.slice(0,26)+'…':saved}</a><br><button class="guide-btn" onclick="editGuide('${adId}')">수정</button></div>`;
+  }
+  return `<div class="guide-input-area"><button class="guide-btn" onclick="editGuide('${adId}')">+ 링크 추가</button></div>`;
+}
+function editGuide(adId){
+  const cur = localStorage.getItem('guide_'+adId) || '';
+  const url = prompt('가이드라인 링크를 입력하세요:', cur);
+  if(url===null) return;
+  if(url==='') localStorage.removeItem('guide_'+adId); else localStorage.setItem('guide_'+adId, url);
+  renderAdTable();
+}
+function renderAdTable(){
+  const list = filterSort(ads, adState);
+  document.getElementById('adCount').textContent = `표시 중 ${list.length} / 23개`;
+  const tb=document.getElementById('adTbody');
+  tb.innerHTML = list.map(a=>{
+    const barPct = (a.spend/adMaxSpend*100).toFixed(1);
+    return `<tr>
+      <td class="n"></td>
+      <td>${nameCell(a.short, a.name)}</td>
+      <td class="spend-cell">${krw(a.spend)}<div class="spend-bar-wrap"><div class="spend-bar" style="width:${barPct}%"></div></div></td>
+      <td>${a.imp?a.imp.toLocaleString():'—'}</td>
+      <td>${a.clk!==null?a.clk.toLocaleString():'<span class="n">—</span>'}</td>
+      <td class="${cpcClass(a.cpcVal)}">${cpcText(a.cpcVal)}</td>
+      <td class="${ctrClass(a.ctrVal)}">${ctrText(a.ctrVal)}</td>
+      <td>${landingBadge(a.landing)}</td>
+      <td><a class="am-link" href="${a.preview}" target="_blank">소재 보기 →</a></td>
+      <td class="guide-cell">${guideCell(a.id)}</td>
+    </tr>`;
+  }).join('');
+}
+
+renderCampTable();
+renderAdTable();
+
+// ── CHARTS ──
+const dailySpend=[63793,91981,106145,93927,110386,108067,137194,111056,65671,5075,20141,38225,36511,48003,42956,56264,85005,400793,70417,37868,47708,40656,27524,44241,27068,24450,12942,16735,13917,12590];
+const dailyLabels=Array.from({length:30},(_,i)=>`6/${i+1}`);
+new Chart(document.getElementById('spendChart'),{
+  type:'bar',
+  data:{
+    labels:dailyLabels,
+    datasets:[{
+      label:'지출 (₩)',
+      data:dailySpend,
+      backgroundColor:dailySpend.map(v=>v>200000?'rgba(245,92,84,.7)':'rgba(79,142,247,.55)'),
+      borderColor:'#4f8ef7',borderWidth:1,borderRadius:3
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>krw(ctx.raw)}}},
+    scales:{
+      x:{grid:{display:false},ticks:{color:'#7b82a0',maxRotation:0,autoSkip:true,maxTicksLimit:10}},
+      y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#7b82a0',callback:v=>'₩'+(v/1000)+'k'}}
+    }
+  }
+});
+
+// 캠페인 도넛 (상위 6 + 기타)
+const sortedBySpend = [...camps].sort((a,b)=>b.spend-a.spend);
+const top6 = sortedBySpend.slice(0,6);
+const others = sortedBySpend.slice(6);
+const otherSpend = others.reduce((s,c)=>s+c.spend,0);
+const shortName = n => n.length>22? n.slice(0,22)+'…' : n;
+new Chart(document.getElementById('campaignChart'),{
+  type:'doughnut',
+  data:{
+    labels:[...top6.map(c=>c.short),`기타 (${camps.length-6}개)`],
+    datasets:[{
+      data:[...top6.map(c=>c.spend),otherSpend],
+      backgroundColor:['#4f8ef7','#34c77b','#7c3aed','#f5a623','#f25c54','#0ea5e9','#6b7280'],
+      borderWidth:0
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'right',labels:{color:'#7b82a0',font:{size:10},padding:6,boxWidth:10}},
+      tooltip:{callbacks:{label:ctx=>`${krw(ctx.raw)} (${((ctx.raw/TOTAL)*100).toFixed(1)}%)`}}
+    }
+  }
+});
+</script>
+</body>
+</html>
